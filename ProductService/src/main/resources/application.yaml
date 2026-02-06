@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ProductService
+  datasource:
+    url: jdbc:postgresql://localhost:5432/product-service
+    username: khagesh
+    password: khagesh
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: ALWAYS
+
+server:
+  port: 4000

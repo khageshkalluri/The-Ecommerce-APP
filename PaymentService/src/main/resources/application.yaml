@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: PaymentService
+  kafka:
+    bootstrap-servers: kafka-service:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+
+
+server:
+  port: 4001
+
+grpc:
+  server:
+    port: 9001
+
+razorpay:
+  key:
+    id: ${razorId}
+    secret: ${razorSecret}
+  enabled: ${razorPay}
+
+
+kafka:
+  topic:
+    payment-completed: payment-completed
+    payment-failed: payment-failed

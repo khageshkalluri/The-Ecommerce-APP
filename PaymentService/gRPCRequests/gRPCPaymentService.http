@@ -1,0 +1,9 @@
+### gRPC call to PaymentService
+GRPC localhost:9001
+Service: payment.PaymentService
+Method: ProcessPayment
+
+{
+  "orderId": "1",
+  "amount": 2
+}

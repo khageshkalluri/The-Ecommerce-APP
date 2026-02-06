@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: OrderService
+  kafka:
+    bootstrap-servers: kafka-service:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+    consumer:
+      group-id: order-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+
+kafka:
+  topics:
+    order-created: order-created
+    order-confirmed: order-confirmed
+    order-failed: order-failed
+    payment-completed: payment-completed
+
+payment:
+  server:
+    address: payment-service
+    port: 9001
+
+server:
+  port: 9800

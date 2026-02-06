@@ -1,0 +1,175 @@
+services:
+  product-service:
+    build: ./ProductService
+    container_name: product-service
+    ports:
+      - "4000:4000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://product-service-db:5432/product-service
+      SPRING_DATASOURCE_USERNAME: khagesh
+      SPRING_DATASOURCE_PASSWORD: khagesh
+      SPRING_JPA_HIBERNATE_DDLAUTO: update
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_SQL_INIT_MODE: always
+    networks:
+      - internals
+    depends_on:
+      - product-service-db
+
+  product-service-db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    networks:
+      - internals
+    environment:
+      POSTGRES_USER: khagesh
+      POSTGRES_PASSWORD: khagesh
+      POSTGRES_DB: product-service
+    volumes:
+      - type: volume
+        source: product_data
+        target: /var/lib/postgresql
+
+  payment-service:
+    build: ./PaymentService
+    container_name: payment-service
+    ports:
+      - "5002:4001"
+      - "5003:9001"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payment-service-db:5432/payment-service
+      SPRING_DATASOURCE_USERNAME: khagesh
+      SPRING_DATASOURCE_PASSWORD: khagesh
+      SPRING_JPA_HIBERNATE_DDLAUTO: update
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_SQL_INIT_MODE: always
+      RAZORPAY_KEY_ID: not enabled
+      RAZORPAY_KEY_SECRET: not enabled
+      RAZORPAY_ENABLED: false
+    networks:
+      - internals
+    depends_on:
+      - payment-service-db
+
+  payment-service-db:
+    image: postgres:latest
+    ports:
+      - "5001:5432"
+    networks:
+      - internals
+    environment:
+      POSTGRES_USER: khagesh
+      POSTGRES_PASSWORD: khagesh
+      POSTGRES_DB: payment-service
+    volumes:
+      - type: volume
+        source: payment_data
+        target: /var/lib/postgresql
+
+
+  auth-service-db:
+    image: postgres:latest
+    ports:
+      - "8002:5432"
+    networks:
+      - internals
+    environment:
+      POSTGRES_USER: khagesh
+      POSTGRES_PASSWORD: khagesh
+      POSTGRES_DB: auth-service
+    volumes:
+      - type: volume
+        source: auth_data
+        target: /var/lib/postgresql
+
+  auth-service:
+    build: ./AuthService
+    container_name: auth-service
+    ports:
+      - "8000:8000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-service-db:5432/auth-service
+      SPRING_DATASOURCE_USERNAME: khagesh
+      SPRING_DATASOURCE_PASSWORD: khagesh
+      SPRING_JPA_HIBERNATE_DDLAUTO: update
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_SQL_INIT_MODE: always
+    networks:
+      - internals
+    depends_on:
+      - auth-service-db
+
+  api-gateway:
+    build: ./APIGateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - internals
+
+  kafka-service:
+    image: apache/kafka:latest
+    container_name: kafka-service
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+        KAFKA_NODE_ID: 1
+        KAFKA_PROCESS_ROLES: broker,controller
+        KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-service:9092,EXTERNAL://kafka-service:9094
+        KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+        KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+        KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+        KAFKA_NUM_PARTITIONS: 1
+    networks:
+      - internals
+
+  order-service-db:
+    image: postgres:latest
+    ports:
+      - "9803:5432"
+    networks:
+      - internals
+    environment:
+      POSTGRES_USER: khagesh
+      POSTGRES_PASSWORD: khagesh
+      POSTGRES_DB: order-service
+    volumes:
+      - type: volume
+        source: order_data
+        target: /var/lib/postgresql
+
+  order-service:
+    build: ./OrderService
+    container_name: order-service
+    ports:
+      - "9800:9800"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://order-service-db:5432/order-service
+      SPRING_DATASOURCE_USERNAME: khagesh
+      SPRING_DATASOURCE_PASSWORD: khagesh
+      SPRING_JPA_HIBERNATE_DDLAUTO: update
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_SQL_INIT_MODE: always
+    networks:
+      - internals
+    depends_on:
+      - order-service-db
+      - kafka-service
+      - payment-service
+      - payment-service-db
+
+volumes:
+  product_data:
+  payment_data:
+  auth_data:
+  order_data:
+
+networks:
+  internals:

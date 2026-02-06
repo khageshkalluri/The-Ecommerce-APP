@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: APIGateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: product-service-route
+              uri: http://product-service:4000
+              predicates:
+                - Path=/auth/products/**
+              filters:
+                - StripPrefix=1
+                - JwtFilter
+            # Auth service - LESS SPECIFIC - comes SECOND
+            - id: auth-service-route
+              uri: http://auth-service:8000
+              predicates:
+                - Path=/auth/**
+
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+
+service:
+  url: http://auth-service:8000

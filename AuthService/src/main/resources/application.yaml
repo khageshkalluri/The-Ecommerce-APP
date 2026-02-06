@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: AuthService
+  datasource:
+    url: jdbc:postgresql://localhost:8002/auth-service
+    username: khagesh
+    password: khagesh
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: ALWAYS
+
+
+server:
+  port: 8000
+
+jwt:
+  secret:
+    key: 3f9b8c2d9a7e4f1a6c8d9e2f7b1a9c3d5e7f9a2b4c6d8e0f1a3b5c7d9e1f3a5
+
+
+
+
+
