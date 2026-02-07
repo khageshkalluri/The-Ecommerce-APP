@@ -1,6 +1,7 @@
 package org.ecomm.productservice.Service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.ecomm.productservice.DTO.ProductRequestDTO;
 import org.ecomm.productservice.DTO.ProductResponseDTO;
 import org.ecomm.productservice.Exceptions.ProductNotFoundException;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class ProductService {
 
     ProductRepository productRepository;
@@ -66,4 +68,15 @@ public class ProductService {
         productRepository.deleteById(product1.getId());
     }
 
+    public Product checkProductInventory(UUID id){
+        Product product1 = this.productRepository.findById(id).orElseThrow(
+                ()-> new ProductNotFoundException("Product not found"));
+        return product1;
+    }
+
+    public Product updateProductInventory(UUID id,long quantity){
+        Product product1=this.productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
+        product1.setQuantity(product1.getQuantity()+quantity);
+       return this.productRepository.save(product1);
+    }
 }

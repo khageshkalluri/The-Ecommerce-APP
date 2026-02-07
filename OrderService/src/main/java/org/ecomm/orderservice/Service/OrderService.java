@@ -5,13 +5,17 @@ import com.ecomm.grpc.payment.*;
 import lombok.extern.slf4j.Slf4j;
 import org.ecomm.orderservice.DTO.CreateOrderRequest;
 import org.ecomm.orderservice.Entity.Order;
+import org.ecomm.orderservice.Entity.OrderItem;
 import org.ecomm.orderservice.Entity.OrderStatus;
 import org.ecomm.orderservice.GrpcClientService.GrpcClientService;
+import org.ecomm.orderservice.GrpcClientService.GrpcProductClient;
 import org.ecomm.orderservice.Producer.KafkaProducerService;
 import org.ecomm.orderservice.Repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.RoundingMode;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +27,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final KafkaProducerService kafkaProducer;
     private final GrpcClientService grpcClientService;
+    private final GrpcProductClient grpcProductClient;
 
-    public OrderService(OrderRepository orderRepository, KafkaProducerService kafkaProducer, GrpcClientService grpcClientService) {
+    public OrderService(OrderRepository orderRepository, KafkaProducerService kafkaProducer, GrpcClientService grpcClientService, GrpcProductClient grpcProductClient) {
         this.orderRepository = orderRepository;
         this.kafkaProducer = kafkaProducer;
         this.grpcClientService = grpcClientService;
+        this.grpcProductClient = grpcProductClient;
     }
 
     @Transactional
@@ -35,11 +41,15 @@ public class OrderService {
         log.info("Creating order for user: {}", request.getCustomerEmail());
 
 
+        if(!this.grpcProductClient.checkProductInventory(request)){
+            return Order.builder().build();
+        }
+
         Order order = Order.builder()
                 .userId(request.getCustomerEmail())
                 .customerEmail(request.getCustomerEmail())
                 .customerPhone(request.getCustomerPhone())
-                .totalAmount(request.getTotalAmount())
+                .totalAmount(BigDecimal.valueOf(request.getItems().stream().map(OrderItem::getPrice).reduce(0.0, Double::sum)).setScale(2, RoundingMode.HALF_UP).doubleValue())
                 .currency(request.getCurrency())
                 .status(OrderStatus.PENDING)
                 .createdAt(LocalDateTime.now())
@@ -114,6 +124,7 @@ public class OrderService {
                         .build())
                 .build();
 
+        this.grpcProductClient.updateProductInventory(order);
         kafkaProducer.publishOrderConfirmed(event);
 
         log.info("Order confirmed: orderId={}, paymentId={}", orderId, paymentId);

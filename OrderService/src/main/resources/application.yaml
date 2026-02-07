@@ -23,5 +23,11 @@ payment:
     address: payment-service
     port: 9001
 
+
+product:
+  grpc:
+    server: product-service
+    port: 9002
+
 server:
   port: 9800

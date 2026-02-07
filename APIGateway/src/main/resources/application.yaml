@@ -13,19 +13,26 @@ spring:
               filters:
                 - StripPrefix=1
                 - JwtFilter
-            # Auth service - LESS SPECIFIC - comes SECOND
+
+            - id: order-service
+              uri: http://order-service:9800
+              predicates:
+                - Path=/auth/api/orders/**
+              filters:
+                - StripPrefix=1
+                - JwtFilter
+
             - id: auth-service-route
               uri: http://auth-service:8000
               predicates:
                 - Path=/auth/**
-
 
 server:
   port: 8080
 
 logging:
   level:
-    org.springframework.cloud.gateway: TRACE
+    root: info
 
 service:
   url: http://auth-service:8000

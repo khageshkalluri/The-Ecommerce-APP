@@ -2,8 +2,6 @@ services:
   product-service:
     build: ./ProductService
     container_name: product-service
-    ports:
-      - "4000:4000"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://product-service-db:5432/product-service
       SPRING_DATASOURCE_USERNAME: khagesh
@@ -20,6 +18,7 @@ services:
     image: postgres:latest
     ports:
       - "5432:5432"
+      - "9002:9002"
     networks:
       - internals
     environment:
@@ -34,9 +33,6 @@ services:
   payment-service:
     build: ./PaymentService
     container_name: payment-service
-    ports:
-      - "5002:4001"
-      - "5003:9001"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://payment-service-db:5432/payment-service
       SPRING_DATASOURCE_USERNAME: khagesh
@@ -86,8 +82,6 @@ services:
   auth-service:
     build: ./AuthService
     container_name: auth-service
-    ports:
-      - "8000:8000"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://auth-service-db:5432/auth-service
       SPRING_DATASOURCE_USERNAME: khagesh
@@ -107,6 +101,11 @@ services:
       - "8080:8080"
     networks:
       - internals
+    depends_on:
+      - product-service
+      - order-service
+      - payment-service
+      - auth-service
 
   kafka-service:
     image: apache/kafka:latest
@@ -148,8 +147,6 @@ services:
   order-service:
     build: ./OrderService
     container_name: order-service
-    ports:
-      - "9800:9800"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://order-service-db:5432/order-service
       SPRING_DATASOURCE_USERNAME: khagesh
@@ -160,10 +157,12 @@ services:
     networks:
       - internals
     depends_on:
+      - product-service
       - order-service-db
       - kafka-service
       - payment-service
       - payment-service-db
+      - product-service-db
 
 volumes:
   product_data:

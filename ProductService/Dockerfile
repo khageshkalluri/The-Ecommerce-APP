@@ -14,6 +14,6 @@ FROM eclipse-temurin:21 as Runner
 
 COPY --from=Builder ./app/target/ProductService-0.0.1-SNAPSHOT.jar ./app.jar
 
-EXPOSE 4000
+EXPOSE 4000 9002
 
 ENTRYPOINT ["java","-jar","app.jar"]

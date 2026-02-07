@@ -78,7 +78,7 @@
         <dependency>
             <groupId>com.github.khageshkalluri</groupId>
             <artifactId>gRPC-Contracts</artifactId>
-            <version>v4.0.0</version>
+            <version>v4.0.2</version>
         </dependency>
 
     </dependencies>

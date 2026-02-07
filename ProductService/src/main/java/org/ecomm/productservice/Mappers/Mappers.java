@@ -17,6 +17,7 @@ public class Mappers {
 
     public static ProductResponseDTO EntityToDtoMapping(Product product){
         return ProductResponseDTO.builder()
+                .productId(String.valueOf(product.getId()))
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(Double.toString(product.getPrice()))

@@ -28,19 +28,11 @@ public class Product {
     @NotNull(message = "name cannot by null")
     @NotBlank(message = "name cannot by blank")
     @NotEmpty(message = "name cannot by empty")
-    @Pattern(
-            regexp = "([A-Z][a-z]+)( [A-Z][a-z]+)*",
-            message = "Each word must start uppercase followed by lowercase letters"
-    )
     private String name;
 
     @NotNull(message = "name cannot by null")
     @NotBlank(message = "name cannot by blank")
     @NotEmpty(message = "name cannot by empty")
-    @Pattern(
-            regexp = "([A-Z]*[a-z]*)( [A-Z]*[a-z]*)*",
-            message = "Each word must start uppercase followed by lowercase letters"
-    )
     private String description;
 
     @NotNull
