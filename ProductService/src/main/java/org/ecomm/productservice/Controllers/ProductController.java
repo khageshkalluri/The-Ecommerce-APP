@@ -2,6 +2,7 @@ package org.ecomm.productservice.Controllers;
 
 import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
+import org.ecomm.productservice.DTO.PaginatedProductResponseDTO;
 import org.ecomm.productservice.DTO.ProductRequestDTO;
 import org.ecomm.productservice.DTO.ProductResponseDTO;
 import org.ecomm.productservice.Service.ProductService;
@@ -37,9 +38,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
-        List<ProductResponseDTO> productResponseDTO= this.productService.getAllProducts();
-        return new ResponseEntity<>(productResponseDTO, HttpStatus.OK);
+    public ResponseEntity<PaginatedProductResponseDTO> getAllProducts(@RequestParam(defaultValue = "1") int page,
+                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                   @RequestParam(defaultValue = "asc") String sort,
+                                                                   @RequestParam(defaultValue = "name") String sortField,
+                                                                   @RequestParam(defaultValue = "") String searchValue) {
+        PaginatedProductResponseDTO pages= this.productService.getAllProducts(page,size,sort,sortField,searchValue);
+        return new ResponseEntity<>(pages, HttpStatus.OK);
     }
 
     @PostMapping("/add")

@@ -2,12 +2,17 @@ package org.ecomm.productservice.Service;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.ecomm.productservice.DTO.PaginatedProductResponseDTO;
 import org.ecomm.productservice.DTO.ProductRequestDTO;
 import org.ecomm.productservice.DTO.ProductResponseDTO;
 import org.ecomm.productservice.Exceptions.ProductNotFoundException;
 import org.ecomm.productservice.Mappers.Mappers;
 import org.ecomm.productservice.Model.Product;
 import org.ecomm.productservice.Repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,9 +29,26 @@ public class ProductService {
     }
 
 
-    public List<ProductResponseDTO> getAllProducts(){
-        List<Product> products= this.productRepository.findAll();
-        return products.stream().map(Mappers::EntityToDtoMapping).toList();
+    public PaginatedProductResponseDTO getAllProducts(int page, int size, String sort, String sortField, String searchValue){
+        Pageable pageable = PageRequest.of(page-1, size, sort.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending(): Sort.by(sortField).descending());
+
+        Page<Product> productPage ;
+        if(searchValue == null || searchValue.isEmpty()){
+            productPage = this.productRepository.findAll(pageable);
+        }
+        else{
+            productPage=this.productRepository.findAllByNameEqualsIgnoreCase(searchValue,pageable);
+        }
+
+        List<ProductResponseDTO> responseDTOS = productPage.getContent().stream().map(Mappers::EntityToDtoMapping).toList();
+
+       return PaginatedProductResponseDTO.builder()
+                .products(responseDTOS)
+                .page(productPage.getNumber()+1)
+                .size(productPage.getSize())
+                .totalPages(productPage.getTotalPages())
+                .totalElements(productPage.getTotalElements())
+                .build();
     }
 
     public ProductResponseDTO getProductById(UUID id){
