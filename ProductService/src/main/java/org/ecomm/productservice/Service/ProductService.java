@@ -9,6 +9,7 @@ import org.ecomm.productservice.Exceptions.ProductNotFoundException;
 import org.ecomm.productservice.Mappers.Mappers;
 import org.ecomm.productservice.Model.Product;
 import org.ecomm.productservice.Repository.ProductRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,11 @@ public class ProductService {
     }
 
 
+    @Cacheable(
+            value = "products",
+            key = "#page + '-' + #size + '-' + #sort +'-'+#sortField",
+            condition ="#searchValue == ''"
+    )
     public PaginatedProductResponseDTO getAllProducts(int page, int size, String sort, String sortField, String searchValue){
         Pageable pageable = PageRequest.of(page-1, size, sort.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending(): Sort.by(sortField).descending());
 

@@ -13,6 +13,7 @@ services:
       - internals
     depends_on:
       - product-service-db
+      - redis-service
 
   product-service-db:
     image: postgres:latest
@@ -163,6 +164,13 @@ services:
       - payment-service
       - payment-service-db
       - product-service-db
+
+  redis-service:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - internals
 
 volumes:
   product_data:
