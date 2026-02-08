@@ -1,10 +1,20 @@
 spring:
   application:
     name: APIGateway
+  data:
+    redis:
+      host: redis-service
+      port: 6379
   cloud:
     gateway:
       server:
         webflux:
+          default-filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.burstCapacity: 1
+                redis-rate-limiter.replenishRate: 1
+                key-Resolver: "#{@ipAddressKeyResolver}"
           routes:
             - id: product-service-route
               uri: http://product-service:4000
