@@ -57,6 +57,7 @@ public class GRPCPaymentService extends PaymentServiceGrpc.PaymentServiceImplBas
                   observer.onCompleted();
 
                   log.info("Payment response sent: {}", payment.getPaymentId());
+                  this.kafkaProducerService.sendPaymentCompletedEvent(payment);
 
 
               } catch (Exception e) {

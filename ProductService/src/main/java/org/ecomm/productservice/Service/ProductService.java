@@ -9,6 +9,7 @@ import org.ecomm.productservice.Exceptions.ProductNotFoundException;
 import org.ecomm.productservice.Mappers.Mappers;
 import org.ecomm.productservice.Model.Product;
 import org.ecomm.productservice.Repository.ProductRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -77,6 +78,10 @@ public class ProductService {
         return Mappers.EntityToDtoMapping(productRepository.save(product1));
     }
 
+    @CacheEvict(
+            value = "products",
+            allEntries = true   // clears all cached product pages
+    )
     public ProductResponseDTO updateProduct(UUID id, ProductRequestDTO product){
         Product product1 = this.productRepository.findById(id).orElseThrow(
                 ()-> new ProductNotFoundException("Product not found"));
@@ -102,6 +107,10 @@ public class ProductService {
         return product1;
     }
 
+    @CacheEvict(
+            value = "products",
+            allEntries = true
+    )
     public Product updateProductInventory(UUID id,long quantity){
         Product product1=this.productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
         product1.setQuantity(product1.getQuantity()+quantity);

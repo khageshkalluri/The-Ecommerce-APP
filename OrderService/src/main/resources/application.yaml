@@ -17,6 +17,7 @@ kafka:
     order-confirmed: order-confirmed
     order-failed: order-failed
     payment-completed: payment-completed
+    payment-creation-failed: payment-creation-failed
 
 payment:
   server:
@@ -31,3 +32,23 @@ product:
 
 server:
   port: 9800
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentServiceCircuitBreaker:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsHalfInOpenState: 3
+        automaticTransitionFromOpentoHalfOpenEnabled: true
+
+  retry:
+    instances:
+      paymentServiceCircuitBreakerRetry:
+        maxAttempts: 2
+        waitDuration: 500ms
+
+
+
