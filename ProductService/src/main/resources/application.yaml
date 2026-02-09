@@ -26,3 +26,16 @@ server:
 grpc:
   server:
     port: 9002
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics,cache
+  endpoint:
+    prometheus:
+      access: UNRESTRICTED
+  prometheus:
+    metrics:
+      export:
+        enabled: true

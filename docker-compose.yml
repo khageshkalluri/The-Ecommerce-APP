@@ -9,6 +9,8 @@ services:
       SPRING_JPA_HIBERNATE_DDLAUTO: update
       SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
       SPRING_SQL_INIT_MODE: always
+    ports:
+      - "6000:4000"
     networks:
       - internals
     depends_on:
@@ -169,6 +171,22 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+    networks:
+      - internals
+
+  prometheus-service:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - internals
+    volumes:
+      - "/Users/khagesh/Downloads/The_Ecommerce_Application/Monitoring/prometheus.yml:/etc/prometheus/prometheus.yml"
+
+  grafana-service:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
     networks:
       - internals
 
