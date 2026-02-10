@@ -41,7 +41,7 @@ public class AuthController {
          }
          Map<String,String> map = new HashMap<>();
          map.put("token",token.get());
-         return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+         return new ResponseEntity<>(map,HttpStatus.OK);
    }
 
 

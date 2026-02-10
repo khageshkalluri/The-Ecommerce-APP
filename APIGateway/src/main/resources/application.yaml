@@ -12,8 +12,8 @@ spring:
           default-filters:
             - name: RequestRateLimiter
               args:
-                redis-rate-limiter.burstCapacity: 1
-                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 10
+                redis-rate-limiter.replenishRate: 10
                 key-Resolver: "#{@ipAddressKeyResolver}"
           routes:
             - id: product-service-route
