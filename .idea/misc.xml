@@ -12,11 +12,14 @@
         <option value="$PROJECT_DIR$/APIGateway/pom.xml" />
         <option value="$PROJECT_DIR$/OrderService/pom.xml" />
         <option value="$PROJECT_DIR$/Integration Tests/pom.xml" />
+        <option value="$PROJECT_DIR$/Infrastructure/pom.xml" />
+        <option value="$PROJECT_DIR$/Infrastruture/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/ApiGateway/pom.xml" />
+        <option value="$PROJECT_DIR$/Infrastruture/pom.xml" />
         <option value="$PROJECT_DIR$/gRPC-Proto-files/pom.xml" />
       </set>
     </option>

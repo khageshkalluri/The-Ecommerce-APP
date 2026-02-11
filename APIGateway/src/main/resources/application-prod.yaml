@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: APIGateway
+  data:
+    redis:
+      host: ${REDIS_HOST:redis-service}
+      port: ${REDIS_PORT:6379}
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.burstCapacity: 10
+                redis-rate-limiter.replenishRate: 10
+                key-Resolver: "#{@ipAddressKeyResolver}"
+          routes:
+            - id: product-service-route
+              uri: http://product-service.ecommerce.local:4000
+              predicates:
+                - Path=/auth/products/**
+              filters:
+                - StripPrefix=1
+                - JwtFilter
+
+            - id: order-service
+              uri: http://order-service.ecommerce.local:9800
+              predicates:
+                - Path=/auth/api/orders/**
+              filters:
+                - StripPrefix=1
+                - JwtFilter
+
+            - id: auth-service-route
+              uri: http://auth-service.ecommerce.local:8000
+              predicates:
+                - Path=/auth/**
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+
+service:
+  url: http://auth-service:8000

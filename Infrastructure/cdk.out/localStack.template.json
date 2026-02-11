@@ -1,0 +1,2391 @@
+{
+ "Resources": {
+  "Ecommerce635E12CE": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Ecommerce"
+     }
+    ]
+   }
+  },
+  "EcommercePublicSubnet1Subnet6AE0D585": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.0.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePublicSubnet1RouteTableAD9C8784": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePublicSubnet1RouteTableAssociationF6E8C138": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EcommercePublicSubnet1RouteTableAD9C8784"
+    },
+    "SubnetId": {
+     "Ref": "EcommercePublicSubnet1Subnet6AE0D585"
+    }
+   }
+  },
+  "EcommercePublicSubnet1DefaultRoute9A2F13E0": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "EcommerceIGWF09A55A4"
+    },
+    "RouteTableId": {
+     "Ref": "EcommercePublicSubnet1RouteTableAD9C8784"
+    }
+   },
+   "DependsOn": [
+    "EcommerceVPCGWF3F23760"
+   ]
+  },
+  "EcommercePublicSubnet1EIPD4F387D1": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet1"
+     }
+    ]
+   }
+  },
+  "EcommercePublicSubnet1NATGateway0D061DF7": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "EcommercePublicSubnet1EIPD4F387D1",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "EcommercePublicSubnet1Subnet6AE0D585"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "EcommercePublicSubnet1DefaultRoute9A2F13E0",
+    "EcommercePublicSubnet1RouteTableAssociationF6E8C138"
+   ]
+  },
+  "EcommercePublicSubnet2SubnetA5545FC8": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.64.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePublicSubnet2RouteTable7EA8C65E": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePublicSubnet2RouteTableAssociation8C209FE3": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EcommercePublicSubnet2RouteTable7EA8C65E"
+    },
+    "SubnetId": {
+     "Ref": "EcommercePublicSubnet2SubnetA5545FC8"
+    }
+   }
+  },
+  "EcommercePublicSubnet2DefaultRouteD71CDB65": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "EcommerceIGWF09A55A4"
+    },
+    "RouteTableId": {
+     "Ref": "EcommercePublicSubnet2RouteTable7EA8C65E"
+    }
+   },
+   "DependsOn": [
+    "EcommerceVPCGWF3F23760"
+   ]
+  },
+  "EcommercePublicSubnet2EIP0AC200C5": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet2"
+     }
+    ]
+   }
+  },
+  "EcommercePublicSubnet2NATGateway228BBF74": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "EcommercePublicSubnet2EIP0AC200C5",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "EcommercePublicSubnet2SubnetA5545FC8"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PublicSubnet2"
+     }
+    ]
+   },
+   "DependsOn": [
+    "EcommercePublicSubnet2DefaultRouteD71CDB65",
+    "EcommercePublicSubnet2RouteTableAssociation8C209FE3"
+   ]
+  },
+  "EcommercePrivateSubnet1SubnetBB9082F1": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.128.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePrivateSubnet1RouteTable426C727F": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePrivateSubnet1RouteTableAssociationC0B96211": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EcommercePrivateSubnet1RouteTable426C727F"
+    },
+    "SubnetId": {
+     "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+    }
+   }
+  },
+  "EcommercePrivateSubnet1DefaultRoute99B375D4": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "EcommercePublicSubnet1NATGateway0D061DF7"
+    },
+    "RouteTableId": {
+     "Ref": "EcommercePrivateSubnet1RouteTable426C727F"
+    }
+   }
+  },
+  "EcommercePrivateSubnet2Subnet363E0C0D": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.192.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePrivateSubnet2RouteTable5BB9E99C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localStack/Ecommerce/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "EcommercePrivateSubnet2RouteTableAssociationD03D8612": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EcommercePrivateSubnet2RouteTable5BB9E99C"
+    },
+    "SubnetId": {
+     "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+    }
+   }
+  },
+  "EcommercePrivateSubnet2DefaultRoute709E73C5": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "EcommercePublicSubnet2NATGateway228BBF74"
+    },
+    "RouteTableId": {
+     "Ref": "EcommercePrivateSubnet2RouteTable5BB9E99C"
+    }
+   }
+  },
+  "EcommerceIGWF09A55A4": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Ecommerce"
+     }
+    ]
+   }
+  },
+  "EcommerceVPCGWF3F23760": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "EcommerceIGWF09A55A4"
+    },
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "authservicedbSubnetGroup7CCA9D7F": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for auth-service-db database",
+    "SubnetIds": [
+     {
+      "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+     },
+     {
+      "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+     }
+    ]
+   }
+  },
+  "authservicedbSecurityGroupC24434D9": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for auth-service-db database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "localStackauthservicedbSecret07F275DB3fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"khagesh\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "authservicedbSecretAttachment47A04D99": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localStackauthservicedbSecret07F275DB3fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "authservicedbF2CC5BE1"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "authservicedbF2CC5BE1": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "auth-service-db",
+    "DBSubnetGroupName": {
+     "Ref": "authservicedbSubnetGroup7CCA9D7F"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localStackauthservicedbSecret07F275DB3fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "khagesh",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "authservicedbSecurityGroupC24434D9",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "orderservicedbSubnetGroup2534AD13": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for order-service-db database",
+    "SubnetIds": [
+     {
+      "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+     },
+     {
+      "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+     }
+    ]
+   }
+  },
+  "orderservicedbSecurityGroupCBF26263": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for order-service-db database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "localStackorderservicedbSecret0877AB633fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"khagesh\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "orderservicedbSecretAttachmentC873CCC9": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localStackorderservicedbSecret0877AB633fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "orderservicedbED7E5D11"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "orderservicedbED7E5D11": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "order-service-db",
+    "DBSubnetGroupName": {
+     "Ref": "orderservicedbSubnetGroup2534AD13"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localStackorderservicedbSecret0877AB633fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "khagesh",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "orderservicedbSecurityGroupCBF26263",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "paymentservicedbSubnetGroup8C0140FF": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for payment-service-db database",
+    "SubnetIds": [
+     {
+      "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+     },
+     {
+      "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+     }
+    ]
+   }
+  },
+  "paymentservicedbSecurityGroup6410AFCD": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for payment-service-db database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "localStackpaymentservicedbSecret2EAFCE623fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"khagesh\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "paymentservicedbSecretAttachment7BBBAFE4": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localStackpaymentservicedbSecret2EAFCE623fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "paymentservicedbFF6B1A48"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "paymentservicedbFF6B1A48": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "payment-service-db",
+    "DBSubnetGroupName": {
+     "Ref": "paymentservicedbSubnetGroup8C0140FF"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localStackpaymentservicedbSecret2EAFCE623fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "khagesh",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "paymentservicedbSecurityGroup6410AFCD",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "productservicedbSubnetGroupBAE2D572": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for product-service-db database",
+    "SubnetIds": [
+     {
+      "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+     },
+     {
+      "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+     }
+    ]
+   }
+  },
+  "productservicedbSecurityGroupED06ED30": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for product-service-db database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "localStackproductservicedbSecret226925143fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"khagesh\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "productservicedbSecretAttachment1280FB27": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localStackproductservicedbSecret226925143fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "productservicedbB46F0D3B"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "productservicedbB46F0D3B": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "product-service-db",
+    "DBSubnetGroupName": {
+     "Ref": "productservicedbSubnetGroupBAE2D572"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localStackproductservicedbSecret226925143fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "khagesh",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "productservicedbSecurityGroupED06ED30",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "authdbhealthcheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "authservicedbF2CC5BE1",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "authservicedbF2CC5BE1",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "orderdbhealthcheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "orderservicedbED7E5D11",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "orderservicedbED7E5D11",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "paymentdbhealthcheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "paymentservicedbFF6B1A48",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "paymentservicedbFF6B1A48",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "productdbhealthcheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "productservicedbB46F0D3B",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "productservicedbB46F0D3B",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "kafkaservice": {
+   "Type": "AWS::MSK::Cluster",
+   "Properties": {
+    "BrokerNodeGroupInfo": {
+     "BrokerAZDistribution": "DEFAULT",
+     "ClientSubnets": [
+      {
+       "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+      },
+      {
+       "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+      }
+     ],
+     "InstanceType": "kafka.m5.large"
+    },
+    "ClusterName": "kafka-service",
+    "KafkaVersion": "2.8.0",
+    "NumberOfBrokerNodes": 1
+   }
+  },
+  "EcommerceCluster205F87C9": {
+   "Type": "AWS::ECS::Cluster"
+  },
+  "EcommerceClusterDefaultServiceDiscoveryNamespace3C6DEAC7": {
+   "Type": "AWS::ServiceDiscovery::PrivateDnsNamespace",
+   "Properties": {
+    "Name": "ecommerce.local",
+    "Vpc": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "authserviceTaskTaskRoleD1F6B291": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "authserviceTask30F43778": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgres://",
+           {
+            "Fn::GetAtt": [
+             "authservicedbF2CC5BE1",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "authservicedbF2CC5BE1",
+             "Endpoint.Port"
+            ]
+           },
+           "/auth-service-db"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "authservicedbSecretAttachment47A04D99"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "khagesh"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       },
+       {
+        "Name": "JWT_SECRET_KEY",
+        "Value": "3f9b8c2d9a7e4f1a6c8d9e2f7b1a9c3d5e7f9a2b4c6d8e0f1a3b5c7d9e1f3a5"
+       }
+      ],
+      "Essential": true,
+      "Image": "auth-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "AuthServiceLogGroup25E2196C"
+        },
+        "awslogs-stream-prefix": "auth-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "auth-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8000,
+        "HostPort": 8000,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "authserviceTaskExecutionRole48D7CFF8",
+      "Arn"
+     ]
+    },
+    "Family": "localStackauthserviceTaskBB1F40F0",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "authserviceTaskTaskRoleD1F6B291",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "authserviceTaskExecutionRole48D7CFF8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "authserviceTaskExecutionRoleDefaultPolicy40B7CDF8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "AuthServiceLogGroup25E2196C",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "authserviceTaskExecutionRoleDefaultPolicy40B7CDF8",
+    "Roles": [
+     {
+      "Ref": "authserviceTaskExecutionRole48D7CFF8"
+     }
+    ]
+   }
+  },
+  "AuthServiceLogGroup25E2196C": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/auth-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "AuthService3C2B741A": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "EcommerceCluster205F87C9"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "AuthServiceSecurityGroup67F2FA7D",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+       },
+       {
+        "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+       }
+      ]
+     }
+    },
+    "ServiceName": "auth-service",
+    "TaskDefinition": {
+     "Ref": "authserviceTask30F43778"
+    }
+   },
+   "DependsOn": [
+    "authdbhealthcheck",
+    "authservicedbF2CC5BE1",
+    "authservicedbSecretAttachment47A04D99",
+    "localStackauthservicedbSecret07F275DB3fdaad7efa858a3daf9490cf0a702aeb",
+    "authservicedbSecurityGroupC24434D9",
+    "authservicedbSubnetGroup7CCA9D7F",
+    "authserviceTaskTaskRoleD1F6B291"
+   ]
+  },
+  "AuthServiceSecurityGroup67F2FA7D": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localStack/AuthService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   },
+   "DependsOn": [
+    "authdbhealthcheck",
+    "authservicedbF2CC5BE1",
+    "authservicedbSecretAttachment47A04D99",
+    "localStackauthservicedbSecret07F275DB3fdaad7efa858a3daf9490cf0a702aeb",
+    "authservicedbSecurityGroupC24434D9",
+    "authservicedbSubnetGroup7CCA9D7F",
+    "authserviceTaskTaskRoleD1F6B291"
+   ]
+  },
+  "paymentserviceTaskTaskRole1FC2E02B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "paymentserviceTask5EDF2786": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgres://",
+           {
+            "Fn::GetAtt": [
+             "paymentservicedbFF6B1A48",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "paymentservicedbFF6B1A48",
+             "Endpoint.Port"
+            ]
+           },
+           "/payment-service-db"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "paymentservicedbSecretAttachment7BBBAFE4"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "RAZORPAY_KEY_SECRET",
+        "Value": "not enabled"
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "khagesh"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       },
+       {
+        "Name": "RAZORPAY_KEY_ID",
+        "Value": "not enabled"
+       },
+       {
+        "Name": "RAZORPAY_ENABLED",
+        "Value": "false"
+       }
+      ],
+      "Essential": true,
+      "Image": "payment-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "PaymentServiceLogGroupDA13287C"
+        },
+        "awslogs-stream-prefix": "payment-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "payment-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 4001,
+        "HostPort": 4001,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "paymentserviceTaskExecutionRole299CC1A9",
+      "Arn"
+     ]
+    },
+    "Family": "localStackpaymentserviceTask885EDACF",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "paymentserviceTaskTaskRole1FC2E02B",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "paymentserviceTaskExecutionRole299CC1A9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "paymentserviceTaskExecutionRoleDefaultPolicy1B98959E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PaymentServiceLogGroupDA13287C",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "paymentserviceTaskExecutionRoleDefaultPolicy1B98959E",
+    "Roles": [
+     {
+      "Ref": "paymentserviceTaskExecutionRole299CC1A9"
+     }
+    ]
+   }
+  },
+  "PaymentServiceLogGroupDA13287C": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/payment-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "PaymentService8D9B0532": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "EcommerceCluster205F87C9"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "PaymentServiceSecurityGroupA6B8193F",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+       },
+       {
+        "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+       }
+      ]
+     }
+    },
+    "ServiceName": "payment-service",
+    "TaskDefinition": {
+     "Ref": "paymentserviceTask5EDF2786"
+    }
+   },
+   "DependsOn": [
+    "paymentdbhealthcheck",
+    "paymentservicedbFF6B1A48",
+    "paymentservicedbSecretAttachment7BBBAFE4",
+    "localStackpaymentservicedbSecret2EAFCE623fdaad7efa858a3daf9490cf0a702aeb",
+    "paymentservicedbSecurityGroup6410AFCD",
+    "paymentservicedbSubnetGroup8C0140FF",
+    "paymentserviceTaskTaskRole1FC2E02B"
+   ]
+  },
+  "PaymentServiceSecurityGroupA6B8193F": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localStack/PaymentService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   },
+   "DependsOn": [
+    "paymentdbhealthcheck",
+    "paymentservicedbFF6B1A48",
+    "paymentservicedbSecretAttachment7BBBAFE4",
+    "localStackpaymentservicedbSecret2EAFCE623fdaad7efa858a3daf9490cf0a702aeb",
+    "paymentservicedbSecurityGroup6410AFCD",
+    "paymentservicedbSubnetGroup8C0140FF",
+    "paymentserviceTaskTaskRole1FC2E02B"
+   ]
+  },
+  "productserviceTaskTaskRoleE4213576": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "productserviceTask076749C4": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgres://",
+           {
+            "Fn::GetAtt": [
+             "productservicedbB46F0D3B",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "productservicedbB46F0D3B",
+             "Endpoint.Port"
+            ]
+           },
+           "/product-service-db"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "productservicedbSecretAttachment1280FB27"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "khagesh"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "product-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "ProductServiceLogGroup1FFA6D7F"
+        },
+        "awslogs-stream-prefix": "product-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "product-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 4000,
+        "HostPort": 4000,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "productserviceTaskExecutionRoleCDB6DDB6",
+      "Arn"
+     ]
+    },
+    "Family": "localStackproductserviceTaskDF847765",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "productserviceTaskTaskRoleE4213576",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "productserviceTaskExecutionRoleCDB6DDB6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "productserviceTaskExecutionRoleDefaultPolicy4FDE2F9D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ProductServiceLogGroup1FFA6D7F",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "productserviceTaskExecutionRoleDefaultPolicy4FDE2F9D",
+    "Roles": [
+     {
+      "Ref": "productserviceTaskExecutionRoleCDB6DDB6"
+     }
+    ]
+   }
+  },
+  "ProductServiceLogGroup1FFA6D7F": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/product-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "ProductService489390C8": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "EcommerceCluster205F87C9"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "ProductServiceSecurityGroupD8CC84D6",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+       },
+       {
+        "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+       }
+      ]
+     }
+    },
+    "ServiceName": "product-service",
+    "TaskDefinition": {
+     "Ref": "productserviceTask076749C4"
+    }
+   },
+   "DependsOn": [
+    "productdbhealthcheck",
+    "productservicedbB46F0D3B",
+    "productservicedbSecretAttachment1280FB27",
+    "localStackproductservicedbSecret226925143fdaad7efa858a3daf9490cf0a702aeb",
+    "productservicedbSecurityGroupED06ED30",
+    "productservicedbSubnetGroupBAE2D572",
+    "productserviceTaskTaskRoleE4213576"
+   ]
+  },
+  "ProductServiceSecurityGroupD8CC84D6": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localStack/ProductService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   },
+   "DependsOn": [
+    "productdbhealthcheck",
+    "productservicedbB46F0D3B",
+    "productservicedbSecretAttachment1280FB27",
+    "localStackproductservicedbSecret226925143fdaad7efa858a3daf9490cf0a702aeb",
+    "productservicedbSecurityGroupED06ED30",
+    "productservicedbSubnetGroupBAE2D572",
+    "productserviceTaskTaskRoleE4213576"
+   ]
+  },
+  "orderserviceTaskTaskRole1D1CC41B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "orderserviceTask9E7FA5F8": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "PAYMENT_SERVER_PORT",
+        "Value": "9001"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgres://",
+           {
+            "Fn::GetAtt": [
+             "orderservicedbED7E5D11",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "orderservicedbED7E5D11",
+             "Endpoint.Port"
+            ]
+           },
+           "/order-service-db"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "orderservicedbSecretAttachmentC873CCC9"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "khagesh"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       },
+       {
+        "Name": "PRODUCT_GRPC_PORT",
+        "Value": "9002"
+       },
+       {
+        "Name": "PRODUCT_GRPC_SERVER",
+        "Value": "host.docker.internal"
+       },
+       {
+        "Name": "PAYMENT_SERVER_ADDRESS",
+        "Value": "host.docker.internal"
+       }
+      ],
+      "Essential": true,
+      "Image": "order-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "OrderServiceLogGroupD60D52B6"
+        },
+        "awslogs-stream-prefix": "order-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "order-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 9800,
+        "HostPort": 9800,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "orderserviceTaskExecutionRole6C8EFDD9",
+      "Arn"
+     ]
+    },
+    "Family": "localStackorderserviceTask635D53F2",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "orderserviceTaskTaskRole1D1CC41B",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "orderserviceTaskExecutionRole6C8EFDD9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "orderserviceTaskExecutionRoleDefaultPolicy1D77CAD8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "OrderServiceLogGroupD60D52B6",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "orderserviceTaskExecutionRoleDefaultPolicy1D77CAD8",
+    "Roles": [
+     {
+      "Ref": "orderserviceTaskExecutionRole6C8EFDD9"
+     }
+    ]
+   }
+  },
+  "OrderServiceLogGroupD60D52B6": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/order-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "OrderServiceC448479E": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "EcommerceCluster205F87C9"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "OrderServiceSecurityGroupDBE18FEA",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+       },
+       {
+        "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+       }
+      ]
+     }
+    },
+    "ServiceName": "order-service",
+    "TaskDefinition": {
+     "Ref": "orderserviceTask9E7FA5F8"
+    }
+   },
+   "DependsOn": [
+    "kafkaservice",
+    "orderdbhealthcheck",
+    "orderservicedbED7E5D11",
+    "orderservicedbSecretAttachmentC873CCC9",
+    "localStackorderservicedbSecret0877AB633fdaad7efa858a3daf9490cf0a702aeb",
+    "orderservicedbSecurityGroupCBF26263",
+    "orderservicedbSubnetGroup2534AD13",
+    "orderserviceTaskTaskRole1D1CC41B",
+    "PaymentServiceSecurityGroupA6B8193F",
+    "PaymentService8D9B0532",
+    "ProductServiceSecurityGroupD8CC84D6",
+    "ProductService489390C8"
+   ]
+  },
+  "OrderServiceSecurityGroupDBE18FEA": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localStack/OrderService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   },
+   "DependsOn": [
+    "kafkaservice",
+    "orderdbhealthcheck",
+    "orderservicedbED7E5D11",
+    "orderservicedbSecretAttachmentC873CCC9",
+    "localStackorderservicedbSecret0877AB633fdaad7efa858a3daf9490cf0a702aeb",
+    "orderservicedbSecurityGroupCBF26263",
+    "orderservicedbSubnetGroup2534AD13",
+    "orderserviceTaskTaskRole1D1CC41B",
+    "PaymentServiceSecurityGroupA6B8193F",
+    "PaymentService8D9B0532",
+    "ProductServiceSecurityGroupD8CC84D6",
+    "ProductService489390C8"
+   ]
+  },
+  "apigatewayTaskTaskRole085EA11E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "apigatewayTaskCE4F7709": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_PROFILES_ACTIVE",
+        "Value": "prod"
+       },
+       {
+        "Name": "SERVICE_URL",
+        "Value": "http://host.docker.internal:8000"
+       }
+      ],
+      "Essential": true,
+      "Image": "api-gateway",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "ApiGatewayServiceLogGroup49E23A6C"
+        },
+        "awslogs-stream-prefix": "api-gateway",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "api-gatewayContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "HostPort": 8080,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "apigatewayTaskExecutionRole35176DBD",
+      "Arn"
+     ]
+    },
+    "Family": "localStackapigatewayTask21407705",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "apigatewayTaskTaskRole085EA11E",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "apigatewayTaskExecutionRole35176DBD": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "apigatewayTaskExecutionRoleDefaultPolicy5D21DA3A": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ApiGatewayServiceLogGroup49E23A6C",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "apigatewayTaskExecutionRoleDefaultPolicy5D21DA3A",
+    "Roles": [
+     {
+      "Ref": "apigatewayTaskExecutionRole35176DBD"
+     }
+    ]
+   }
+  },
+  "ApiGatewayServiceLogGroup49E23A6C": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/api-gateway",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "ApiGatewayServiceLB661D42EC": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "ApiGatewayServiceLBSecurityGroup0E508841",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Ref": "EcommercePublicSubnet1Subnet6AE0D585"
+     },
+     {
+      "Ref": "EcommercePublicSubnet2SubnetA5545FC8"
+     }
+    ],
+    "Type": "application"
+   },
+   "DependsOn": [
+    "EcommercePublicSubnet1DefaultRoute9A2F13E0",
+    "EcommercePublicSubnet1RouteTableAssociationF6E8C138",
+    "EcommercePublicSubnet2DefaultRouteD71CDB65",
+    "EcommercePublicSubnet2RouteTableAssociation8C209FE3"
+   ]
+  },
+  "ApiGatewayServiceLBSecurityGroup0E508841": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatically created Security Group for ELB localStackApiGatewayServiceLB2CA62A45",
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 80",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "ApiGatewayServiceLBSecurityGrouptolocalStackApiGatewayServiceSecurityGroupA3A27BB08080400ADC4B": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "DestinationSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ApiGatewayServiceSecurityGroup867C9DB1",
+      "GroupId"
+     ]
+    },
+    "FromPort": 8080,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ApiGatewayServiceLBSecurityGroup0E508841",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 8080
+   }
+  },
+  "ApiGatewayServiceLBPublicListenerA86B9BC4": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "ApiGatewayServiceLBPublicListenerECSGroup0BFE5495"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "ApiGatewayServiceLB661D42EC"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   }
+  },
+  "ApiGatewayServiceLBPublicListenerECSGroup0BFE5495": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "Port": 80,
+    "Protocol": "HTTP",
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "ip",
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   }
+  },
+  "ApiGatewayService4908847F": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "EcommerceCluster205F87C9"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "DesiredCount": 1,
+    "EnableECSManagedTags": false,
+    "HealthCheckGracePeriodSeconds": 60,
+    "LaunchType": "FARGATE",
+    "LoadBalancers": [
+     {
+      "ContainerName": "api-gatewayContainer",
+      "ContainerPort": 8080,
+      "TargetGroupArn": {
+       "Ref": "ApiGatewayServiceLBPublicListenerECSGroup0BFE5495"
+      }
+     }
+    ],
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "ApiGatewayServiceSecurityGroup867C9DB1",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "EcommercePrivateSubnet1SubnetBB9082F1"
+       },
+       {
+        "Ref": "EcommercePrivateSubnet2Subnet363E0C0D"
+       }
+      ]
+     }
+    },
+    "ServiceName": "api-gateway",
+    "TaskDefinition": {
+     "Ref": "apigatewayTaskCE4F7709"
+    }
+   },
+   "DependsOn": [
+    "apigatewayTaskTaskRole085EA11E",
+    "ApiGatewayServiceLBPublicListenerECSGroup0BFE5495",
+    "ApiGatewayServiceLBPublicListenerA86B9BC4"
+   ]
+  },
+  "ApiGatewayServiceSecurityGroup867C9DB1": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localStack/ApiGatewayService/Service/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Ecommerce635E12CE"
+    }
+   },
+   "DependsOn": [
+    "apigatewayTaskTaskRole085EA11E"
+   ]
+  },
+  "ApiGatewayServiceSecurityGroupfromlocalStackApiGatewayServiceLBSecurityGroupF6B4E7CC8080CB35E2B0": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "FromPort": 8080,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ApiGatewayServiceSecurityGroup867C9DB1",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ApiGatewayServiceLBSecurityGroup0E508841",
+      "GroupId"
+     ]
+    },
+    "ToPort": 8080
+   },
+   "DependsOn": [
+    "apigatewayTaskTaskRole085EA11E"
+   ]
+  }
+ },
+ "Outputs": {
+  "ApiGatewayServiceLoadBalancerDNS40D66446": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApiGatewayServiceLB661D42EC",
+     "DNSName"
+    ]
+   }
+  },
+  "ApiGatewayServiceServiceURL8E0540A6": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "http://",
+      {
+       "Fn::GetAtt": [
+        "ApiGatewayServiceLB661D42EC",
+        "DNSName"
+       ]
+      }
+     ]
+    ]
+   }
+  }
+ }
+}

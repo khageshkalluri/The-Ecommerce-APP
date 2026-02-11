@@ -190,6 +190,12 @@ services:
     networks:
       - internals
 
+
+  prometheus-prod:
+    build: ./Monitoring
+    image: prometheus-prod:latest
+    container_name: prometheus-prod
+
 volumes:
   product_data:
   payment_data:

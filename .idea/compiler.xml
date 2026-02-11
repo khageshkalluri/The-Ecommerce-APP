@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Infrastructure" />
         <module name="IntegrationTests" />
         <module name="APIGateway" />
       </profile>
@@ -26,6 +27,7 @@
     <bytecodeTargetLevel>
       <module name="ApiGateway" target="21" />
       <module name="gRPC-Proto-files" target="1.8" />
+      <module name="Infrastruture" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
