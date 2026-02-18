@@ -191,10 +191,10 @@ services:
       - internals
 
 
-  prometheus-prod:
-    build: ./Monitoring
-    image: prometheus-prod:latest
-    container_name: prometheus-prod
+#  prometheus-prod:
+#    build: ./Monitoring
+#    image: prometheus-prod:latest
+#    container_name: prometheus-prod
 
 volumes:
   product_data:
