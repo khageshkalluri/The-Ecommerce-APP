@@ -444,6 +444,186 @@ REFUNDED (via refundPayment RPC)
 | Payment Service | Kafka | **Kafka Consumer** | Retry failed payments | Asynchronous |
 | Payment Service | Razorpay | **HTTP/REST** | Payment gateway | External API |
 
+## 🚀 CI/CD Pipeline
+
+This project uses **GitHub Actions** for a fully automated CI/CD pipeline that builds, tests, and publishes Docker images on every push to `main`.
+
+### Pipeline Overview
+
+```
+push to main
+     ↓
+CI: Build JARs → Start Services → Run Integration Tests
+     ↓ (only if CI passes)
+CD: Build Docker Images → Push to GHCR → Push to Docker Hub
+```
+
+### Workflow File
+
+```yaml
+name: CI-CD workflow to build, test and publish docker images
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: pull the code from github
+        uses: actions/checkout@v4
+
+      - name: install Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: build the APIGateway JAR
+        run: cd ./APIGateway/ && mvn clean package -DskipTests
+
+      - name: build the AuthService JAR
+        run: cd ./AuthService/ && mvn clean package -DskipTests
+
+      - name: build the OrderService JAR
+        run: cd ./OrderService/ && mvn clean package -DskipTests
+
+      - name: build the PaymentService JAR
+        run: cd ./PaymentService/ && mvn clean package -DskipTests
+
+      - name: build the ProductService JAR
+        run: cd ./ProductService/ && mvn clean package -DskipTests
+
+      - name: start all the services
+        run: docker compose up -d && sleep 60
+
+      - name: Run all the Integration tests
+        run: |
+          cd ./Integration\ Tests/
+          mvn clean verify
+
+      - name: get logs in case of failure
+        if: ${{ failure() }}
+        run: docker compose logs
+
+      - name: stop all services
+        if: ${{ always() }}
+        run: docker compose down -v
+
+  deploy:
+    needs: build-test
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: pull the code from repo
+        uses: actions/checkout@v4
+
+      - name: Login to Github Container Registry
+        run: echo "${{secrets.GITHUB_TOKEN}}" | docker login ghcr.io -u ${{github.actor}} --password-stdin
+
+      - name: Login to Docker Hub
+        run: echo "${{secrets.DOCKER_PASSWORD}}" | docker login -u ${{secrets.DOCKER_USER}} --password-stdin
+
+      - name: Build the docker images
+        run: |
+          docker build -t ghcr.io/${{github.repository_owner}}/api-gateway:latest ./APIGateway/
+          docker build -t ghcr.io/${{github.repository_owner}}/auth-service:latest ./AuthService/
+          docker build -t ghcr.io/${{github.repository_owner}}/order-service:latest ./OrderService/
+          docker build -t ghcr.io/${{github.repository_owner}}/payment-service:latest ./PaymentService/
+          docker build -t ghcr.io/${{github.repository_owner}}/product-service:latest ./ProductService/
+
+      - name: Tag images for Docker Hub
+        run: |
+          docker tag ghcr.io/${{github.repository_owner}}/api-gateway:latest ${{secrets.DOCKER_USER}}/the-ecomm-app:api-gateway
+          docker tag ghcr.io/${{github.repository_owner}}/auth-service:latest ${{secrets.DOCKER_USER}}/the-ecomm-app:auth-service
+          docker tag ghcr.io/${{github.repository_owner}}/order-service:latest ${{secrets.DOCKER_USER}}/the-ecomm-app:order-service
+          docker tag ghcr.io/${{github.repository_owner}}/payment-service:latest ${{secrets.DOCKER_USER}}/the-ecomm-app:payment-service
+          docker tag ghcr.io/${{github.repository_owner}}/product-service:latest ${{secrets.DOCKER_USER}}/the-ecomm-app:product-service
+
+      - name: Push to Github Container Registry
+        run: |
+          docker push ghcr.io/${{github.repository_owner}}/api-gateway:latest
+          docker push ghcr.io/${{github.repository_owner}}/auth-service:latest
+          docker push ghcr.io/${{github.repository_owner}}/order-service:latest
+          docker push ghcr.io/${{github.repository_owner}}/payment-service:latest
+          docker push ghcr.io/${{github.repository_owner}}/product-service:latest
+
+      - name: Push to Docker Hub
+        run: |
+          docker push ${{secrets.DOCKER_USER}}/the-ecomm-app:api-gateway
+          docker push ${{secrets.DOCKER_USER}}/the-ecomm-app:auth-service
+          docker push ${{secrets.DOCKER_USER}}/the-ecomm-app:order-service
+          docker push ${{secrets.DOCKER_USER}}/the-ecomm-app:payment-service
+          docker push ${{secrets.DOCKER_USER}}/the-ecomm-app:product-service
+```
+
+### CI Stage — What It Does
+
+| Step | Description |
+|------|-------------|
+| Build JARs | Compiles all 5 services with Maven, skipping tests for speed |
+| Start services | Starts all containers via `docker compose up -d` with 60s wait for readiness |
+| Integration tests | Runs `mvn clean verify` against the running services |
+| Log on failure | Automatically prints docker compose logs if any step fails |
+| Cleanup | Always stops and removes all containers and volumes |
+
+### CD Stage — What It Does
+
+Runs only if CI passes (`needs: build-test`).
+
+| Step | Description |
+|------|-------------|
+| Login to GHCR | Uses the auto-generated `GITHUB_TOKEN` — no secrets needed |
+| Login to Docker Hub | Uses `DOCKER_USER` and `DOCKER_PASSWORD` secrets |
+| Build images | Builds Docker image for each service |
+| Tag for Docker Hub | Reuses built images — no redundant builds |
+| Push to GHCR | Private images at `ghcr.io/khageshkalluri/<service>:latest` |
+| Push to Docker Hub | All 5 images in one private repo `the-ecomm-app` with service tags |
+
+### Image Locations
+
+**GitHub Container Registry (private):**
+```
+ghcr.io/khageshkalluri/api-gateway:latest
+ghcr.io/khageshkalluri/auth-service:latest
+ghcr.io/khageshkalluri/order-service:latest
+ghcr.io/khageshkalluri/payment-service:latest
+ghcr.io/khageshkalluri/product-service:latest
+```
+
+**Docker Hub (private, single repo):**
+```
+khageshkalluri/the-ecomm-app:api-gateway
+khageshkalluri/the-ecomm-app:auth-service
+khageshkalluri/the-ecomm-app:order-service
+khageshkalluri/the-ecomm-app:payment-service
+khageshkalluri/the-ecomm-app:product-service
+```
+
+### Required Secrets
+
+| Secret | Description |
+|--------|-------------|
+| `DOCKER_USER` | Docker Hub username |
+| `DOCKER_PASSWORD` | Docker Hub access token |
+| `GITHUB_TOKEN` | Auto-provided by GitHub Actions — no setup needed |
+
+Add secrets at: `GitHub repo → Settings → Secrets and variables → Actions`
+
+### Branch Protection
+
+Branch protection rules are enforced on `main`:
+- Pull requests required before merging
+- `build-test` status check must pass
+- Branches must be up to date before merging
+- Force pushes blocked
+
+This ensures broken code can never be merged into `main`.
+
+---
+
 ## 📊 Technology Stack
 
 ### Core Technologies
