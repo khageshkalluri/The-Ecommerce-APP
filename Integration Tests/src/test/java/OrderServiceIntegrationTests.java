@@ -4,6 +4,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class OrderServiceIntegrationTests {
@@ -16,6 +17,16 @@ public class OrderServiceIntegrationTests {
 
     @Test
     public void putOrderWithCreatedAndResponseBody(){
+
+        String payload0 = """
+                {
+                     "email":"kkr@gmail.com",
+                     "password":"pass",
+                     "role": "Admin"
+                 }
+                """;
+
+        given().contentType(ContentType.JSON).body(payload0).when().post("/auth/register").getBody();
 
         String payload = """
                 {
@@ -90,6 +101,16 @@ public class OrderServiceIntegrationTests {
 
     @Test
     public void getOrderWithOkStatusAndResponseBody(){
+
+        String payload0 = """
+                {
+                     "email":"kkr@gmail.com",
+                     "password":"pass",
+                     "role": "Admin"
+                 }
+                """;
+
+        given().contentType(ContentType.JSON).body(payload0).when().post("/auth/register").getBody();
 
         String payload = """
                 {

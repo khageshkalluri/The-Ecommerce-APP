@@ -4,6 +4,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class AuthorizationIntegrationTests {
@@ -16,6 +17,16 @@ public class AuthorizationIntegrationTests {
     @Test
     public void shouldReturnOkWithResponse() {
 
+        String payload0 = """
+                {
+                     "email":"kkr@gmail.com",
+                     "password":"pass",
+                     "role": "Admin"
+                 }
+                """;
+
+        given().contentType(ContentType.JSON).body(payload0).when().post("/auth/register").getBody();
+
         String payload = """
                 {
                     "email":"kkr@gmail.com",
@@ -23,7 +34,7 @@ public class AuthorizationIntegrationTests {
                 }
                 """;
 
-        Response response = RestAssured.given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(payload)
                 .when()
@@ -40,6 +51,16 @@ public class AuthorizationIntegrationTests {
     @Test
     public void shouldReturnUnauthorizedWithNoResponse() {
 
+        String payload0 = """
+                {
+                     "email":"kkr@gmail.com",
+                     "password":"pass",
+                     "role": "Admin"
+                 }
+                """;
+
+        given().contentType(ContentType.JSON).body(payload0).when().post("/auth/register").getBody();
+
         String payload = """
                 {
                     "email":"kkr@gmail.com",
@@ -47,7 +68,7 @@ public class AuthorizationIntegrationTests {
                 }
                 """;
 
-        RestAssured.given()
+        given()
                 .contentType(ContentType.JSON)
                 .body(payload)
                 .when()
