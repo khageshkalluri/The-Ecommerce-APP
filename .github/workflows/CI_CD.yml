@@ -42,7 +42,7 @@ jobs:
           mvn clean package -DskipTests
 
       - name: start all the services
-        run: docker compose up -d && sleep 60
+        run: docker compose up -d && sleep 120
 
       - name: Run all the Integration tests
         run: |
